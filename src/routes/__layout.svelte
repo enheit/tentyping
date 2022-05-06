@@ -1,9 +1,13 @@
 <script>
+  import DynamicLogo from '../components/dynamic-logo/dynamic-logo.svelte'
+
   let { version } = PACKAGE_JSON
 </script>
 
 <div class="container">
-  <header>header</header>
+  <header>
+    <DynamicLogo />
+  </header>
 
   <main>
     <slot />
@@ -60,6 +64,10 @@
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-template-columns: 100%;
+  }
+
+  header {
+    padding: 16px;
   }
 
   footer {
