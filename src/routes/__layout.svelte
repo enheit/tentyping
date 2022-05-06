@@ -46,8 +46,16 @@
 </div>
 
 <style>
+  :root {
+    --fontFamily: 'Lato', sans-serif;
+  }
+
   :global(html, body) {
     height: 100%;
+  }
+
+  :global(body) {
+    font-family: var(--fontFamily)
   }
 
   :global(body) {
