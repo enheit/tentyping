@@ -2,7 +2,10 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="%svelte.assets%/favicon.png" />
+		<!-- Fallback icon for older browsers. I hope... -->
+		<link rel="icon" href="%svelte.assets%/favicon.png" /> 
+		<link rel="icon" href="%svelte.assets%/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
+		<link rel="icon" href="%svelte.assets%/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%svelte.head%
 	</head>
