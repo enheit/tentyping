@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "svelte-kit dev --port 5555",
     "build": "svelte-kit build",
+    "deploy": "node ./gh-pages.js",
     "package": "svelte-kit package",
     "preview": "svelte-kit preview",
     "prepare": "svelte-kit sync",
@@ -21,6 +22,8 @@
   },
   "type": "module",
   "dependencies": {
-    "bootstrap-icons": "^1.8.1"
+    "@sveltejs/adapter-static": "^1.0.0-next.29",
+    "bootstrap-icons": "^1.8.1",
+    "gh-pages": "^3.2.3"
   }
 }

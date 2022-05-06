@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -20,7 +20,14 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter(),
+		prerender: {
+			default: true,
+		},
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: null
+		}),
 		vite: {
 			define: {
 				PACKAGE_JSON: packageJson
