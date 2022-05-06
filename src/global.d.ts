@@ -1,0 +1,1 @@
+declare const PACKAGE_JSON: { version: string };
