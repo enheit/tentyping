@@ -14,6 +14,7 @@
   const typosIndexes = writable(new Set<number>())
 
   $: done = $caretIndex === sentence.length
+  $: accuracy = 100 - Math.round($typos / sentence.length * 100)
 
   function reset(): void {
     console.log(typosIndexes)
@@ -85,6 +86,7 @@
 
 <div class="container">
   <div class="typing-info">
+    <InfoItem icon='bi-percent' label='accuracy' value={`${accuracy}`} />
     <InfoItem icon={getTyposEmoji(0, $typos, done)} label='typos' value={$typos.toString()} />
   </div>
   <div class="sentence">
