@@ -1,0 +1,32 @@
+<script lang="ts">
+  import Letter from '../symbol/symbol.svelte'
+
+  export let word: string;
+  export let caretIndex: number;
+  export let startIndex: number;
+  export let actualSentece: string;
+
+  const symbols = word.split("")
+</script>
+
+<div class="word">
+  {#each symbols as symbol, index}
+    {@const symbolIndex = startIndex + index}
+    {@const typed = caretIndex > symbolIndex}
+    {@const wrongSymbol = actualSentece.at(symbolIndex) !== symbol}
+
+    <Letter
+      symbol={symbol}
+      invalid={typed && wrongSymbol} 
+      active={caretIndex === symbolIndex}
+      typed={typed}
+    />
+  {/each}
+</div>
+
+<style>
+  .word {
+    display: flex;
+  }
+</style>
+
