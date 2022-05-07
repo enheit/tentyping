@@ -10,11 +10,16 @@
   const typos = writable(0)
   const caretIndex = writable(0)
   const typedSymbols = writable('')
+  const typosIndexes = writable(new Set<number>())
+
+  $: done = $caretIndex === sentence.length
 
   function reset(): void {
+    console.log(typosIndexes)
     $caretIndex = 0
     $typos = 0
     $typedSymbols = ''
+    $typosIndexes = new Set()
   }
 
   function clearLastSymbol (): void {
@@ -23,16 +28,20 @@
   }
  
   function handleInput (event: KeyboardEvent): void {
+    if (event.code === Key.Enter) {
+      reset()
+      return
+    }
+
+    if (done) {
+      return
+    }
+
     const isKeyIgnored = ignoredKeys.some(ignoredKey => ignoredKey === event.key)
 
     if (event.metaKey || event.ctrlKey || isKeyIgnored) {
       return
     } 
-    
-    if (event.code === Key.Enter) {
-      reset()
-      return
-    }
     
     if (event.code === Key.Backspace) {
       clearLastSymbol()
@@ -45,6 +54,7 @@
 
     if (typo) {
       $typos += 1
+      typosIndexes.update(prevTyposIndexes => prevTyposIndexes.add($caretIndex))
     }
 
     $typedSymbols += typedSymbol
@@ -62,10 +72,12 @@
   <div class="sentence">
     {#each words as word, i}
       <Word
+        done={done}
         word={word}
         caretIndex={$caretIndex}
         startIndex={words.slice(0, i).join("").length}
         actualSentece={$typedSymbols}
+        typosIndexes={$typosIndexes}
       />
     {/each}
   </div>
