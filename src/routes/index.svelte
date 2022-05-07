@@ -3,6 +3,7 @@
   import { ignoredKeys, Key } from "../helpers/key.enum";
   import { writable } from "svelte/store";
   import Word from "../components/word/word.svelte";
+  import InfoItem from "../components/info-item/info-item.svelte";
 
   const sentence = 'lorem ipsum dolor sit amet consectetur adipiscing elit phasellus et turpis lacus donec dolor justo lacinia et odio nec placerat dapibus ex donec accumsan dui quis dolor sollicitudin eu facilisis purus malesuada donec vitae eleifend arcu vel interdum enim'
   const words = sentence.split(/(\s+)/)
@@ -60,6 +61,20 @@
     $typedSymbols += typedSymbol
     $caretIndex += 1
   }
+
+  function getTyposEmoji (progress: number, typos: number, done: boolean): string {
+    if (done && typos === 0) {
+      return 'bi-emoji-heart-eyes'
+    } else if (typos > 0 && typos <= 3) {
+      return 'bi-emoji-expressionless'
+    } else if (typos > 3 && typos <= 10) {
+      return 'bi-emoji-frown'
+    } else if (typos > 10) {
+      return 'bi-emoji-angry'
+    }
+    
+    return 'bi-emoji-neutral'
+  }
 </script>
 
 <svelte:head>
@@ -69,6 +84,9 @@
 <svelte:window on:keydown={handleInput} />
 
 <div class="container">
+  <div class="typing-info">
+    <InfoItem icon={getTyposEmoji(0, $typos, done)} label='typos' value={$typos.toString()} />
+  </div>
   <div class="sentence">
     {#each words as word, i}
       <Word
@@ -86,9 +104,16 @@
 <style>
   .container {
     display: flex;
+    flex-direction: column;
     height: calc(100% - 30px); /* minus (top + bottom) paddings */
-    align-items: center;
     padding: 15px;
+    gap: 36px;
+  }
+
+  .typing-info {
+    display: flex;
+    align-self: center;
+    gap: 16px;
   }
 
   .sentence {
