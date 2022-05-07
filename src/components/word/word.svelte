@@ -5,6 +5,8 @@
   export let caretIndex: number;
   export let startIndex: number;
   export let actualSentece: string;
+  export let typosIndexes: Set<number>
+  export let done: boolean = false;
 
   const symbols = word.split("")
 </script>
@@ -17,7 +19,7 @@
 
     <Letter
       symbol={symbol}
-      invalid={typed && wrongSymbol} 
+      invalid={done ? typosIndexes.has(symbolIndex) : typed && wrongSymbol}
       active={caretIndex === symbolIndex}
       typed={typed}
     />
