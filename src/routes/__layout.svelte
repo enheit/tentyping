@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import "../app.css";
   import DynamicLogo from '../components/dynamic-logo/dynamic-logo.svelte'
 
@@ -14,7 +14,7 @@
     <slot />
   </main>
 
-  <footer>
+  <footer class="text-slate-600 dark:text-slate-500">
     <div class="flex gap-6">
       <a href="mailto:roman.mahotskyi@gmail.com">
         <i class="bi bi-envelope-fill" />
