@@ -28,5 +28,5 @@
   typingAnimation()
 </script>
 
-<h1 class="font-bold text-3xl">{$title}</h1>
+<h1 class="font-bold text-3xl dark:text-slate-100">{$title}</h1>
 

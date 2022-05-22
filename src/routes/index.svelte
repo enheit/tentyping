@@ -145,11 +145,20 @@
 
 <div class="flex flex-col grow gap-8 px-4 -mt-20 justify-center">
   <div title='WPM / Accuracy / Typos' class="flex items-end text-lg justify-center gap-2">
-
-    <div class="flex gap-4">
-      <div title='Words per minute' class="min-w-[100px]  justify-center flex gap-2 text-xl items-center">
-        <span class="bi-lightning"></span>
+    <div class="flex gap-4 dark:text-slate-100">
+      <div title='Words per minute' class="min-w-[100px]  justify-center flex gap-2 text-2xl items-center">
+        <span class="bi-lightning font-bold text-yellow-500"></span>
         <p>{$wpm}</p>
+      </div>
+
+      <div title="Accuracy" class="min-w-[100px] justify-center flex gap-2 text-2xl  items-center">
+        <span class="bi-bullseye text-sky-500"></span>
+        <p>{accuracy}%</p>
+      </div>
+      
+      <div title='Typos' class="min-w-[100px] justify-center flex gap-2 text-2xl items-center">
+        <span class="bi-cone text-rose-500"></span>
+        <p>{$typos}</p>
       </div>
 
       <!-- <div title="Accuracy" class="min-w-[100px]  justify-center flex gap-2 text-xl  items-center">
@@ -179,11 +188,29 @@
   </div>
 
   <div class:invisible={!done} class="flex flex-col items-center gap-4 justify-center">
-    <div class="flex gap-8">
+    <!-- <div class="flex gap-4 text-slate-100">
+      <div title="Accuracy" class="justify-center flex gap-2 text-xl  items-center">
+        <span class="bi-bullseye text-rose-500"></span>
+        <p>{accuracy}%</p>
+      </div>
+      
+      <div title='Typos' class="justify-center flex gap-2 text-xl items-center">
+        <span class="bi-cone text-orange-500"></span>
+        <p>{$typos}</p>
+      </div>
+    </div> -->
+
+    <!-- <div class="flex gap-8 text-slate-100">
       <p>WPM {$wpm} (gross)</p>
       <p>Accuracy {accuracy}%</p>
       <p>Typos {$typos}</p>
-    </div>
-    <p>Enter — restart</p>
+    </div> -->
+
+    <button on:click={reset} class="flex items-center gap-2 bg-green-300 dark:bg-green-500 rounded-lg px-2 py-1">
+      <span class="bi-arrow-return-left"></span>
+      <p>Restart</p>
+    </button>
+
+    <!-- <p class="text-green-100">Enter — restart</p> -->
   </div>
 </div>

@@ -5,12 +5,17 @@
   export let typed: boolean = false
 
   $: space = symbol === ' '
+  $: activeBackground = active ? 'dark:bg-slate-600 bg-slate-300' : ''
+  $: textColor = typed && !invalid ? 'text-slate-400 dark:text-slate-500' : ''
+  $: textInvalid = invalid ? 'text-rose-500 dark:text-rose-500' : ''
+
+  $: dynamicClasses = `dark:text-slate-100 ${textColor} ${activeBackground} ${textInvalid}`
 </script>
 
-<h3 class:invalid class:typed={typed && !invalid} class:active class:space class="symbol">
+<h3 class:space class="symbol rounded-sm {dynamicClasses}">
   {#if space}
     {#if invalid}
-      <div class="circle" />
+      <div class="circle bg-rose-500" />
     {:else}
       &nbsp;
     {/if}
@@ -38,19 +43,6 @@
     top: 2px;
     width: 5px;
     height: 5px;
-    background: red;
     border-radius: 50%;
-  }
-
-  .typed {
-    opacity: 0.5;
-  }
-
-  .invalid {
-    color: red;
-  }
-
-  .active {
-    background: pink;
   }
 </style>
