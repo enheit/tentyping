@@ -6,10 +6,10 @@
 
   $: space = symbol === ' '
   $: activeBackground = active ? 'dark:bg-slate-600 bg-slate-300' : ''
-  $: textColor = typed && !invalid ? 'text-slate-400 dark:text-slate-500' : ''
+  $: textColor = typed && !invalid ? 'text-slate-400 dark:text-slate-500' : 'dark:text-slate-100'
   $: textInvalid = invalid ? 'text-rose-500 dark:text-rose-500' : ''
 
-  $: dynamicClasses = `dark:text-slate-100 ${textColor} ${activeBackground} ${textInvalid}`
+  $: dynamicClasses = `${textColor} ${activeBackground} ${textInvalid}`
 </script>
 
 <h3 class:space class="symbol rounded-sm {dynamicClasses}">
