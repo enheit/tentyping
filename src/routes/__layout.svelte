@@ -1,4 +1,5 @@
 <script>
+  import "../app.css";
   import DynamicLogo from '../components/dynamic-logo/dynamic-logo.svelte'
 
   let { version } = PACKAGE_JSON
@@ -9,12 +10,12 @@
     <DynamicLogo />
   </header>
 
-  <main>
+  <main class="flex flex-col">
     <slot />
   </main>
 
   <footer>
-    <div class="left">
+    <div class="flex gap-6">
       <a href="mailto:roman.mahotskyi@gmail.com">
         <i class="bi bi-envelope-fill" />
         Contact
@@ -31,7 +32,7 @@
       </a>
     </div>
 
-    <div class="right">
+    <div class="flex gap-6">
       <a href="https://github.com/enheit/tentyping">
         <i class="bi bi-github" />
         GitHub
@@ -82,12 +83,6 @@
     padding: 16px;
     display: flex;
     justify-content: space-between;
-  }
-
-  footer .right,
-  footer .left {
-    display: flex;
-    gap: 8px;
   }
 
   footer a {
