@@ -4,7 +4,7 @@
     "name": "Roman Mahotskyi",
     "email": "roman.mahotskyi@gmail.com"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "svelte-kit dev --port 5555",
     "build": "svelte-kit build",
