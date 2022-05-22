@@ -1,6 +1,10 @@
 {
   "name": "tentyping",
-  "version": "0.0.1",
+  "author": {
+    "name": "Roman Mahotskyi",
+    "email": "roman.mahotskyi@gmail.com"
+  },
+  "version": "1.0.0",
   "scripts": {
     "dev": "svelte-kit dev --port 5555",
     "build": "svelte-kit build",
