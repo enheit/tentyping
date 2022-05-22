@@ -7,6 +7,7 @@
   export let actualSentece: string;
   export let typosIndexes: Set<number>
   export let done: boolean = false;
+  export let isCapsLock: boolean = false
 
   const symbols = word.split("")
 </script>
@@ -22,6 +23,7 @@
       invalid={done ? typosIndexes.has(symbolIndex) : typed && wrongSymbol}
       active={caretIndex === symbolIndex}
       typed={typed}
+      isCapsLock={isCapsLock}
     />
   {/each}
 </div>

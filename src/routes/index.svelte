@@ -29,6 +29,7 @@
     .map((item, i, arr) => (arr.length - 1 === i ? item : item + " "));
 
   let RAFId: number = -1;
+  let isCapslockTurnedOn = false
   const wpm = writable(0);
   const typos = writable(0);
   const caretIndex = writable(0);
@@ -90,7 +91,21 @@
     $caretIndex = spacePosition + 1
   }
 
+  function turnOffCapsLockNotification (event: KeyboardEvent) {
+    if (event.code === Key.CapsLock && isCapslockTurnedOn) {
+      isCapslockTurnedOn = false
+    }
+  }
+
+  function trackCapsLock(event: KeyboardEvent) {
+    if (event.code === Key.CapsLock || event.getModifierState('CapsLock')) {
+      isCapslockTurnedOn = true
+    }
+  }
+
   function handleInput(event: KeyboardEvent): void {
+    trackCapsLock(event)
+
     if (event.code === Key.Enter) {
       reset();
       return;
@@ -154,9 +169,11 @@
   <title>Tentyping</title>
 </svelte:head>
 
-<svelte:window on:keydown={handleInput} />
+<svelte:window on:keydown={handleInput} on:keyup={turnOffCapsLockNotification} />
 
 <div class="flex flex-col grow gap-8 px-4 -mt-20 justify-center">
+
+
   <div title='WPM / Accuracy / Typos' class="flex items-end text-lg justify-center gap-2">
     <div class="flex gap-4 dark:text-slate-100">
       <div title='Words per minute' class="min-w-[100px]  justify-center flex gap-2 text-2xl items-center">
@@ -173,17 +190,6 @@
         <span class="bi-cone text-rose-500"></span>
         <p>{$typos}</p>
       </div>
-
-      <!-- <div title="Accuracy" class="min-w-[100px]  justify-center flex gap-2 text-xl  items-center">
-        <span class="bi-bullseye"></span>
-        <p>{accuracy}%</p>
-      </div>
-
-      
-      <div title='Typos' class="min-w-[100px]  justify-center flex gap-2 text-xl items-center">
-        <span class="bi-cone"></span>
-        <p>{$typos}</p>
-      </div> -->
     </div>
   </div>
 
@@ -196,34 +202,15 @@
         startIndex={words.slice(0, i).join("").length}
         actualSentece={$typedSymbols}
         typosIndexes={$typosIndexes}
+        isCapsLock={isCapslockTurnedOn}
       />
     {/each}
   </div>
 
   <div class:invisible={!done} class="flex flex-col items-center gap-4 justify-center">
-    <!-- <div class="flex gap-4 text-slate-100">
-      <div title="Accuracy" class="justify-center flex gap-2 text-xl  items-center">
-        <span class="bi-bullseye text-rose-500"></span>
-        <p>{accuracy}%</p>
-      </div>
-      
-      <div title='Typos' class="justify-center flex gap-2 text-xl items-center">
-        <span class="bi-cone text-orange-500"></span>
-        <p>{$typos}</p>
-      </div>
-    </div> -->
-
-    <!-- <div class="flex gap-8 text-slate-100">
-      <p>WPM {$wpm} (gross)</p>
-      <p>Accuracy {accuracy}%</p>
-      <p>Typos {$typos}</p>
-    </div> -->
-
-    <button on:click={reset} class="flex items-center gap-2 bg-green-300 dark:bg-green-500 rounded-lg px-2 py-1">
+    <button  on:click={reset} class="flex items-center gap-2 bg-green-300 dark:bg-green-500 rounded-lg px-2 py-1">
       <span class="bi-arrow-return-left"></span>
       <p>Restart</p>
     </button>
-
-    <!-- <p class="text-green-100">Enter — restart</p> -->
   </div>
 </div>
