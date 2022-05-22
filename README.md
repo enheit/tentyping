@@ -2,7 +2,7 @@
 
 **Tentyping** - Typing practice website. 
 
-See [www.tentyping.com](www.tentyping.com)
+See [www.tentyping.com](https://tentyping.com)
 
 # Motivation
 At the moment, there are many services that are aimed at teaching and improving typing skills. Most of them have too many configurations and prerequisites to just start typing. 
