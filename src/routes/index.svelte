@@ -36,7 +36,7 @@
   const typosIndexes = writable(new Set<number>());
 
   $: done = $caretIndex === sentence.length;
-  $: accuracy = 100 - Math.round(($typos / ($typedSymbols.length || 1)) * 100); // || 1 ignore 0 to prevent rendiring NaN
+  $: accuracy = Math.max(100 - Math.round(($typos / ($typedSymbols.length || 1)) * 100), 0); // || 1 ignore 0 to prevent rendiring NaN
 
   $: if (done) {
     cancelAnimationFrame(RAFId);
