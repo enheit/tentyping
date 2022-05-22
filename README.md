@@ -1,3 +1,5 @@
+![Frame 1 (1)](https://user-images.githubusercontent.com/8645216/169683077-80cbf7cf-b51d-45d9-ac09-6036c254b0a1.png)
+
 **Tentyping** - Typing practice website. 
 
 See [www.tentyping.com](www.tentyping.com)
