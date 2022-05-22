@@ -82,6 +82,14 @@
     $caretIndex = Math.max($caretIndex - 1, 0);
   }
 
+  function removeLastWord(): void {
+    const spacePosition = sentence.lastIndexOf(' ', $caretIndex - 2)
+    const distance =  $caretIndex - spacePosition - 1
+
+    $typedSymbols = $typedSymbols.slice(0, -distance)
+    $caretIndex = spacePosition + 1
+  }
+
   function handleInput(event: KeyboardEvent): void {
     if (event.code === Key.Enter) {
       reset();
@@ -89,6 +97,11 @@
     }
 
     if (done) {
+      return;
+    }
+
+    if (event.code === Key.Backspace && event.altKey) {
+      removeLastWord()
       return;
     }
 
