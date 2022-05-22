@@ -28,11 +28,5 @@
   typingAnimation()
 </script>
 
-<h1>{$title}</h1>
+<h1 class="font-bold text-3xl">{$title}</h1>
 
-<style>
-  h1 {
-    margin: 0;
-    font-family: 'Red Hat Display', sans-serif;
-  }
-</style>

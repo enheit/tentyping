@@ -1,143 +1,139 @@
 <script lang="ts">
   import "bootstrap-icons/font/bootstrap-icons.css";
-  import { ignoredKeys, Key } from "../helpers/key.enum";
+  import shuffle from "lodash.shuffle";
   import { writable } from "svelte/store";
+  import { words as commonEnglishWords } from "../../static/data/1000-most-common-words.json";
   import Word from "../components/word/word.svelte";
-  import InfoItem from "../components/info-item/info-item.svelte";
-  import { words as commonEnglishWords } from '../../static/data/1000-most-common-words.json'
-  import shuffle from 'lodash.shuffle'
+  import { ignoredKeys,Key } from "../helpers/key.enum";
 
-  function getShuffledWords (): string[] {
-    return shuffle(commonEnglishWords)
+  function getShuffledWords(): string[] {
+    return shuffle(commonEnglishWords);
   }
 
-  function getChunkOfWords (words: string[], number: number): string[] {
-    return words.slice(0, number)
+  function getChunkOfWords(words: string[], number: number): string[] {
+    return words.slice(0, number);
   }
 
-  function makeSentence (words: string[]): string {
-    return words.join(' ')
+  function makeSentence(words: string[]): string {
+    return words.join(" ");
   }
 
-  function generateSentence (): string {
-    return makeSentence(getChunkOfWords(getShuffledWords(), 20))
+  function generateSentence(): string {
+    return makeSentence(getChunkOfWords(getShuffledWords(), 20));
   }
 
-  let sentence = generateSentence()
+  let sentence = generateSentence();
   // TODO: Replace with RegExp ['word ', 'word ', 'word ', 'word']
-  $: words = sentence.split(' ').map((item, i, arr) => arr.length - 1 === i ? item : item + ' ')
+  $: words = sentence
+    .split(" ")
+    .map((item, i, arr) => (arr.length - 1 === i ? item : item + " "));
 
-  let RAFId: number = -1
-  const wpm = writable(0)
-  const typos = writable(0)
-  const caretIndex = writable(0)
-  const typedSymbols = writable('')
-  const typosIndexes = writable(new Set<number>())
+  let RAFId: number = -1;
+  const wpm = writable(0);
+  const typos = writable(0);
+  const caretIndex = writable(0);
+  const typedSymbols = writable("");
+  const typosIndexes = writable(new Set<number>());
 
-  $: done = $caretIndex === sentence.length
-  $: accuracy = 100 - Math.round($typos / ($typedSymbols.length || 1) * 100) // || 1 ignore 0 to prevent rendiring NaN
+  $: done = $caretIndex === sentence.length;
+  $: accuracy = 100 - Math.round(($typos / ($typedSymbols.length || 1)) * 100); // || 1 ignore 0 to prevent rendiring NaN
 
   $: if (done) {
-    cancelAnimationFrame(RAFId)
+    cancelAnimationFrame(RAFId);
   }
 
-  let startTimestamp: number | null = null
+  let startTimestamp: number | null = null;
   let lastTimestamp = 0;
   let speedInMs = 500;
 
-  function step (timestamp: number): void {
+  function step(timestamp: number): void {
     if (!startTimestamp) {
-      startTimestamp = timestamp
+      startTimestamp = timestamp;
     }
 
-    const localTimestamp = timestamp - startTimestamp
+    const localTimestamp = timestamp - startTimestamp;
 
     if (timestamp - lastTimestamp >= speedInMs) {
       lastTimestamp = timestamp;
 
-      const progressInMinutes = (localTimestamp / 1000) / 60
+      const progressInMinutes = localTimestamp / 1000 / 60;
 
-      $wpm = calculateGrossWpm($typedSymbols.length, progressInMinutes || 1) // `... || 1` removes 0 case, which renders Infinity
+      $wpm = calculateGrossWpm($typedSymbols.length, progressInMinutes || 1); // `... || 1` removes 0 case, which renders Infinity
     }
 
-    RAFId = requestAnimationFrame(step)
+    RAFId = requestAnimationFrame(step);
   }
 
   function reset(): void {
-    $wpm = 0
-    $caretIndex = 0
-    $typos = 0
-    $typedSymbols = ''
-    $typosIndexes = new Set()
-    sentence = generateSentence()
-    startTimestamp = null
-    lastTimestamp = 0
+    $wpm = 0;
+    $caretIndex = 0;
+    $typos = 0;
+    $typedSymbols = "";
+    $typosIndexes = new Set();
+    sentence = generateSentence();
+    startTimestamp = null;
+    lastTimestamp = 0;
 
-    cancelAnimationFrame(RAFId)
+    cancelAnimationFrame(RAFId);
   }
 
-  function clearLastSymbol (): void {
-    $typedSymbols = $typedSymbols.slice(0, -1)
-    $caretIndex = Math.max($caretIndex - 1, 0)
+  function clearLastSymbol(): void {
+    $typedSymbols = $typedSymbols.slice(0, -1);
+    $caretIndex = Math.max($caretIndex - 1, 0);
   }
- 
-  function handleInput (event: KeyboardEvent): void {
+
+  function handleInput(event: KeyboardEvent): void {
     if (event.code === Key.Enter) {
-      reset()
-      return
+      reset();
+      return;
     }
 
     if (done) {
-      return
+      return;
     }
 
-    const isKeyIgnored = ignoredKeys.some(ignoredKey => ignoredKey === event.key)
+    const isKeyIgnored = ignoredKeys.some(
+      (ignoredKey) => ignoredKey === event.key
+    );
 
     if (event.metaKey || event.ctrlKey || isKeyIgnored) {
-      return
-    } 
-    
+      return;
+    }
+
     if (event.code === Key.Backspace) {
-      clearLastSymbol()
-      return
+      clearLastSymbol();
+      return;
     }
 
     if ($caretIndex === 0) {
-      RAFId = requestAnimationFrame(step)
+      RAFId = requestAnimationFrame(step);
     }
 
-    const typedSymbol = event.key
-    const expectedSymbol = sentence.at($caretIndex)
-    const typo = expectedSymbol !== typedSymbol
+    const typedSymbol = event.key;
+    const expectedSymbol = sentence.at($caretIndex);
+    const typo = expectedSymbol !== typedSymbol;
 
     if (typo) {
-      $typos += 1
-      typosIndexes.update(prevTyposIndexes => prevTyposIndexes.add($caretIndex))
+      $typos += 1;
+      typosIndexes.update((prevTyposIndexes) =>
+        prevTyposIndexes.add($caretIndex)
+      );
     }
 
-    $typedSymbols += typedSymbol
-    $caretIndex += 1
+    $typedSymbols += typedSymbol;
+    $caretIndex += 1;
   }
 
-  function getTyposEmoji (progress: number, typos: number, done: boolean): string {
-    if (done && typos === 0) {
-      return 'bi-emoji-heart-eyes'
-    } else if (typos > 0 && typos <= 3) {
-      return 'bi-emoji-expressionless'
-    } else if (typos > 3 && typos <= 10) {
-      return 'bi-emoji-frown'
-    } else if (typos > 10) {
-      return 'bi-emoji-angry'
-    }
-    
-    return 'bi-emoji-neutral'
-  }
+  function calculateGrossWpm(
+    symbols: number,
+    ellapsedTimeInMinutes: number
+  ): number {
+    const averageCharacters = 5;
+    const grossWpm = Math.round(
+      symbols / averageCharacters / ellapsedTimeInMinutes
+    );
 
-  function calculateGrossWpm (symbols: number, ellapsedTimeInMinutes: number): number {
-    const averageCharacters = 5
-    const grossWpm = Math.round((symbols / averageCharacters) / ellapsedTimeInMinutes)
-
-    return grossWpm
+    return grossWpm;
   }
 </script>
 
@@ -147,17 +143,33 @@
 
 <svelte:window on:keydown={handleInput} />
 
-<div class="container">
-  <div class="typing-info">
-    <InfoItem icon='bi-lightning' label='words/min' value={$wpm.toString()} />
-    <InfoItem icon='bi-percent' label='accuracy' value={`${accuracy}`} />
-    <InfoItem icon={getTyposEmoji(0, $typos, done)} label='typos' value={$typos.toString()} />
+<div class="flex flex-col grow gap-8 px-4 -mt-20 justify-center">
+  <div title='WPM / Accuracy / Typos' class="flex items-end text-lg justify-center gap-2">
+
+    <div class="flex gap-4">
+      <div title='Words per minute' class="min-w-[100px]  justify-center flex gap-2 text-xl items-center">
+        <span class="bi-lightning"></span>
+        <p>{$wpm}</p>
+      </div>
+
+      <!-- <div title="Accuracy" class="min-w-[100px]  justify-center flex gap-2 text-xl  items-center">
+        <span class="bi-bullseye"></span>
+        <p>{accuracy}%</p>
+      </div>
+
+      
+      <div title='Typos' class="min-w-[100px]  justify-center flex gap-2 text-xl items-center">
+        <span class="bi-cone"></span>
+        <p>{$typos}</p>
+      </div> -->
+    </div>
   </div>
-  <div class="sentence">
+
+  <div class="flex flex-wrap">
     {#each words as word, i (word + i)}
       <Word
-        done={done}
-        word={word}
+        {done}
+        {word}
         caretIndex={$caretIndex}
         startIndex={words.slice(0, i).join("").length}
         actualSentece={$typedSymbols}
@@ -165,25 +177,13 @@
       />
     {/each}
   </div>
+
+  <div class:invisible={!done} class="flex flex-col items-center gap-4 justify-center">
+    <div class="flex gap-8">
+      <p>WPM {$wpm} (gross)</p>
+      <p>Accuracy {accuracy}%</p>
+      <p>Typos {$typos}</p>
+    </div>
+    <p>Enter — restart</p>
+  </div>
 </div>
-
-<style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 30px); /* minus (top + bottom) paddings */
-    padding: 15px;
-    gap: 36px;
-  }
-
-  .typing-info {
-    display: flex;
-    align-self: center;
-    gap: 16px;
-  }
-
-  .sentence {
-    display: flex;
-    flex-wrap: wrap;
-  }
-</style>
