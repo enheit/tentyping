@@ -7,7 +7,7 @@
   export let actualSentece: string;
   export let typosIndexes: Set<number>
   export let done: boolean = false;
-  export let isCapsLock: boolean = false
+  export let isCapsLock = false
 
   const symbols = word.split("")
 </script>
