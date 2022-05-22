@@ -21,7 +21,7 @@
         Contact
       </a>
 
-      <a href="https://github.com/enheit/tentyping/issues/new">
+      <a href="https://github.com/enheit/tentyping/issues/new?assignees=enheit&labels=%F0%9F%90%9E+bug&template=bug_report.md&title=">
         <i class="bi bi-bug-fill" />
         Bug report
       </a>
