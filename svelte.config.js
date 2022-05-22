@@ -31,6 +31,11 @@ const config = {
 		vite: {
 			define: {
 				PACKAGE_JSON: packageJson
+			},
+			server: {
+				fs: {
+					allow: ['./static/data']
+				}
 			}
 		}
 	}

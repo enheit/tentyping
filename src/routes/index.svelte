@@ -4,9 +4,28 @@
   import { writable } from "svelte/store";
   import Word from "../components/word/word.svelte";
   import InfoItem from "../components/info-item/info-item.svelte";
+  import { words as commonEnglishWords } from '../../static/data/1000-most-common-words.json'
+  import shuffle from 'lodash.shuffle'
 
-  const sentence = 'lorem ipsum dolor sit amet consectetur adipiscing elit phasellus et turpis lacus donec dolor justo lacinia et odio nec placerat dapibus ex donec accumsan dui quis dolor sollicitudin eu facilisis purus malesuada donec vitae eleifend arcu vel interdum enim'
-  const words = sentence.split(/(\s+)/)
+  function getShuffledWords (): string[] {
+    return shuffle(commonEnglishWords)
+  }
+
+  function getChunkOfWords (words: string[], number: number): string[] {
+    return words.slice(0, number)
+  }
+
+  function makeSentence (words: string[]): string {
+    return words.join(' ')
+  }
+
+  function generateSentence (): string {
+    return makeSentence(getChunkOfWords(getShuffledWords(), 20))
+  }
+
+  let sentence = generateSentence()
+  // TODO: Replace with RegExp ['word ', 'word ', 'word ', 'word']
+  $: words = sentence.split(' ').map((item, i, arr) => arr.length - 1 === i ? item : item + ' ')
 
   let RAFId: number = -1
   const wpm = writable(0)
@@ -50,6 +69,7 @@
     $typos = 0
     $typedSymbols = ''
     $typosIndexes = new Set()
+    sentence = generateSentence()
     startTimestamp = null
     lastTimestamp = 0
 
@@ -134,7 +154,7 @@
     <InfoItem icon={getTyposEmoji(0, $typos, done)} label='typos' value={$typos.toString()} />
   </div>
   <div class="sentence">
-    {#each words as word, i}
+    {#each words as word, i (word + i)}
       <Word
         done={done}
         word={word}
