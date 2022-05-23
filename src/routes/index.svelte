@@ -1,10 +1,42 @@
 <script lang="ts">
   import "bootstrap-icons/font/bootstrap-icons.css";
   import shuffle from "lodash.shuffle";
+  import type { CaretType } from "src/helpers/caret-type";
   import { writable } from "svelte/store";
   import { words as commonEnglishWords } from "../../static/data/1000-most-common-words.json";
   import Word from "../components/word/word.svelte";
   import { ignoredKeys,Key } from "../helpers/key.enum";
+  import { browser } from "$app/env";
+
+  function getCaretTypoFromLocalStorage (): CaretType {
+    if (browser) {
+      return localStorage.getItem("caret") as CaretType || 'background'
+    }
+
+    return 'background'
+  }
+
+  function syncCaretTypewithLocalStorage (caretType: CaretType): void {
+    if (browser) {
+      localStorage.setItem('caret', caretType)
+    }
+  }
+
+  let caretType = writable<CaretType>(getCaretTypoFromLocalStorage())
+
+  caretType.subscribe(syncCaretTypewithLocalStorage)
+
+  function changeCaretType (): void {
+    if ($caretType === 'background') {
+      $caretType = 'underline'
+    } else if ($caretType === 'underline') {
+      $caretType = 'line'
+    } else if ($caretType === 'line') {
+      $caretType = 'box'
+    } else {
+      $caretType = 'background'
+    }
+  }
 
   function getShuffledWords(): string[] {
     return shuffle(commonEnglishWords);
@@ -203,6 +235,8 @@
         actualSentece={$typedSymbols}
         typosIndexes={$typosIndexes}
         isCapsLock={isCapslockTurnedOn}
+        caretType={$caretType}
+        on:caretChange={changeCaretType}
       />
     {/each}
   </div>

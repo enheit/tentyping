@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { CaretType } from 'src/helpers/caret-type';
+
   import Letter from '../symbol/symbol.svelte'
 
   export let word: string;
@@ -8,6 +10,7 @@
   export let typosIndexes: Set<number>
   export let done: boolean = false;
   export let isCapsLock = false
+  export let caretType: CaretType
 
   const symbols = word.split("")
 </script>
@@ -24,6 +27,8 @@
       active={caretIndex === symbolIndex}
       typed={typed}
       isCapsLock={isCapsLock}
+      caretType={caretType}
+      on:caretChange
     />
   {/each}
 </div>
