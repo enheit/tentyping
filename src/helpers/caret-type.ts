@@ -1,0 +1,1 @@
+export type CaretType = 'box' | 'background' | 'line' | 'underline'
